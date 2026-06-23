@@ -36,7 +36,7 @@ def code_view(active_line=None, executed=None, title="Program code"):
         color = "#111827" if is_active or is_done else "#6b7280"
         rows.append(
             f"""
-            <div style='display:grid;grid-template-columns:30px 40px 1fr;align-items:stretch;gap:2px;margin:2px 0;'>
+            <div style='display:grid;grid-template-columns:30px 40px 1fr;align-items:stretch;gap:1px;:1px 0;'>
               <div style='text-align:right;color:#94a3b8;font-family:monospace;padding-top:2px;'>{i}</div>
               <div style='font-family:monospace;color:#ef4444;font-weight:700;'>{arrow}</div>
               <div style='font-family:monospace;white-space:pre;background:{bg};border:{border};border-radius:8px;padding:4px 8px;color:{color};'>
@@ -47,8 +47,8 @@ def code_view(active_line=None, executed=None, title="Program code"):
         )
 
     return f"""
-    <div style='border:1px solid #cbd5e1;border-radius:14px;padding:14px;background:#f8fafc;'>
-      <div style='font-weight:700;margin-bottom:10px;color:#0f172a;'>{title}</div>
+    <div style='border:1px solid #cbd5e1;border-radius:7px;padding:7px;background:#f8fafc;'>
+      <div style='font-weight:700;margin-bottom:5px;color:#0f172a;'>{title}</div>
       {''.join(rows)}
     </div>
     """
@@ -94,7 +94,7 @@ class CodeFlowVisualizer:
             clear_output(wait=True)
             display(HTML(code_view(active_line=active_line, executed=executed, title="Running")))
             if message:
-                display(HTML(f"<p style='margin-top:10px;font-family:monospace;background:#111827;color:#f8fafc;padding:10px;border-radius:10px;'>{message}</p>"))
+                display(HTML(f"<p style='margin-top:10px;font-family:monospace;background:#111827;color:#f8fafc;padding:5px;border-radius:5px;'>{message}</p>"))
 
     def reset_program(self, _):
         self.render_start()
