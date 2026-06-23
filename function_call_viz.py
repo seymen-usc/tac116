@@ -1,66 +1,102 @@
 from IPython.display import display, HTML, clear_output
 import ipywidgets as widgets
+import time
 
-# Input widget
-temp_input = widgets.IntText(
+temp = widgets.IntSlider(
     value=75,
-    description='Temp:'
+    min=0,
+    max=120,
+    description="Temp"
 )
 
-run_button = widgets.Button(
+run_btn = widgets.Button(
     description="Run Program",
     button_style="success"
 )
 
-output = widgets.Output()
+out = widgets.Output()
 
-def run_program(button):
-    with output:
-        clear_output()
+def show_step(lines):
+    clear_output(wait=True)
 
-        weather = temp_input.value
+    html = "<pre style='font-size:16px;'>"
+    html += "\n".join(lines)
+    html += "</pre>"
 
-        steps = []
+    display(temp)
+    display(run_btn)
+    display(out)
 
-        # Step 1
-        steps.append("➡️ main() starts")
-
-        # Step 2
-        steps.append("📢 print('Welcome to the weather checker!')")
-
-        # Step 3
-        steps.append("➡️ showWeather() called")
-
-        # Step 4
-        steps.append(f"🌡️ weather = {weather}")
-
-        # Decision
-        if weather > 80:
-            steps.append(" weather > 80 ? → TRUE")
-            steps.append(" print('It seems hot!')")
-        else:
-            steps.append(" weather > 80 ? → FALSE")
-            steps.append(" print('Nice weather!')")
-
-        # Final
-        steps.append(" print('Thanks for using the weather checker!')")
-        steps.append(" Program Ends")
-
-        html = "<h3>Program Flow</h3>"
-
-        for step in steps:
-            html += (
-                "<div style='padding:10px;"
-                "margin:5px;"
-                "border:1px solid #ccc;"
-                "border-radius:8px;'>"
-                f"{step}</div>"
-            )
-
+    with out:
+        clear_output(wait=True)
         display(HTML(html))
 
-run_button.on_click(run_program)
+def run_program(b):
 
-display(temp_input)
-display(run_button)
-display(output)
+    weather = temp.value
+
+    steps = [
+        [
+            "➜ main()",
+            "",
+            "  print('Welcome to the weather checker!')",
+            "  showWeather()",
+            "  print('Thanks for using the weather checker!')"
+        ],
+
+        [
+            "main()",
+            "",
+            "➜ print('Welcome to the weather checker!')"
+        ],
+
+        [
+            "main()",
+            "",
+            "➜ showWeather()"
+        ],
+
+        [
+            "showWeather()",
+            "",
+            f"➜ weather = {weather}"
+        ]
+    ]
+
+    if weather > 80:
+        steps.append([
+            "showWeather()",
+            "",
+            "➜ if weather > 80: TRUE",
+            "",
+            "➜ print('It seems hot!')"
+        ])
+    else:
+        steps.append([
+            "showWeather()",
+            "",
+            "➜ if weather > 80: FALSE",
+            "",
+            "➜ print('Nice weather!')"
+        ])
+
+    steps.extend([
+        [
+            "main()",
+            "",
+            "➜ print('Thanks for using the weather checker!')"
+        ],
+        [
+            "✅ Program Finished"
+        ]
+    ])
+
+    for step in steps:
+        show_step(step)
+        time.sleep(1.2)
+
+run_btn.on_click(run_program)
+
+display(temp)
+display(run_btn)
+display(out)
