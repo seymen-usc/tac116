@@ -25,9 +25,9 @@ def safe_int(text, default):
 class ListPlayground:
     def __init__(self):
         self.list_text = widgets.Textarea(
-            value="apple, banana, cherry, date",
+            value="apple, banana, onion, date",
             description="List:",
-            layout=widgets.Layout(width="100%", height="90px"),
+            layout=widgets.Layout(width="50%", height="90px"),
         )
 
         self.operation = widgets.Dropdown(
@@ -40,31 +40,31 @@ class ListPlayground:
             ],
             value="append",
             description="Op:",
-            layout=widgets.Layout(width="250px"),
+            layout=widgets.Layout(width="150px"),
         )
 
         self.value_box = widgets.Text(
             value="kiwi",
             description="Value:",
-            layout=widgets.Layout(width="250px"),
+            layout=widgets.Layout(width="150px"),
         )
 
         self.index_box = widgets.Text(
             value="1",
             description="Index:",
-            layout=widgets.Layout(width="250px"),
+            layout=widgets.Layout(width="150px"),
         )
 
         self.start_box = widgets.Text(
             value="1",
             description="Start:",
-            layout=widgets.Layout(width="250px"),
+            layout=widgets.Layout(width="150px"),
         )
 
         self.end_box = widgets.Text(
             value="3",
             description="End:",
-            layout=widgets.Layout(width="250px"),
+            layout=widgets.Layout(width="150px"),
         )
 
         self.load_button = widgets.Button(description="Load List", button_style="")
