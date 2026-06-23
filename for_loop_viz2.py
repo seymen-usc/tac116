@@ -1,15 +1,13 @@
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
-import json
 
 # ─────────────────────────────────────────────────────────────
 # SECTION: How a for loop works — live visual explainer
-# Inputs are linked to the visualization: changing start/stop/
-# step or the string instantly rebuilds the sequence display.
 # ─────────────────────────────────────────────────────────────
 
 VISUAL_HTML = """
 <style>
+  @keyframes flSlide { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
   #fldemo * { box-sizing: border-box; }
   #fldemo { padding: 14px; background: #f8f8f8; border: 1px solid #ddd;
             border-radius: 8px; margin-bottom: 16px; font-family: sans-serif; }
@@ -20,15 +18,18 @@ VISUAL_HTML = """
   .fl-ctrl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .fl-ctrl label { font-size: 12px; color: #666; }
   .fl-ctrl input[type=number] { width: 52px; font-family: monospace; font-size: 13px;
-                                 text-align: center; border: 1px solid #ccc; border-radius: 4px;
-                                 padding: 3px 4px; }
+                                 text-align: center; border: 1px solid #ccc;
+                                 border-radius: 4px; padding: 3px 4px; }
   .fl-ctrl input[type=text]   { width: 110px; font-family: monospace; font-size: 13px;
                                  border: 1px solid #ccc; border-radius: 4px; padding: 3px 6px; }
   .fl-code { background: #272822; color: #f8f8f2; border-radius: 6px; padding: 8px 14px;
-             font-family: monospace; font-size: 13px; margin-bottom: 12px; white-space: pre;
-             display: inline-block; }
+             font-family: monospace; font-size: 13px; margin-bottom: 12px;
+             white-space: pre; display: inline-block; }
   .fl-kw  { color: #66d9e8; font-weight: bold; }
   .fl-val { color: #e6db74; }
+  .fl-warn { background: #fff3cd; color: #856404; border: 1px solid #ffc107;
+             border-radius: 5px; padding: 5px 10px; font-size: 12px;
+             margin-bottom: 8px; display: none; }
   .fl-seq { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-end;
             min-height: 72px; margin-bottom: 12px; }
   .fl-seg { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -37,7 +38,8 @@ VISUAL_HTML = """
   .fl-box { border: 1px solid #bbb; border-radius: 5px; padding: 6px 0;
             font-family: monospace; font-size: 13px; text-align: center;
             color: #222; background: #fff; transition: all .15s; min-width: 36px; }
-  .fl-box.active { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; font-weight: bold; }
+  .fl-box.active { border-color: #1a73e8; background: #e8f0fe;
+                   color: #1a73e8; font-weight: bold; }
   .fl-box.done   { border-color: #34a853; background: #e6f4ea; color: #1e6b35; }
   .fl-idx { font-family: monospace; font-size: 10px; color: #999; }
   .fl-vrow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -50,10 +52,9 @@ VISUAL_HTML = """
             padding: 7px 12px; font-family: monospace; font-size: 13px;
             min-height: 34px; color: #333; }
   .fl-out-line { animation: flSlide .2s ease both; }
-  @keyframes flSlide { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
   .fl-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
-  .fl-btn  { padding: 5px 14px; font-size: 13px; border: 1px solid #bbb; border-radius: 6px;
-             background: #fff; color: #444; cursor: pointer; }
+  .fl-btn  { padding: 5px 14px; font-size: 13px; border: 1px solid #bbb;
+             border-radius: 6px; background: #fff; color: #444; cursor: pointer; }
   .fl-btn.primary { background: #e8f0fe; color: #1a73e8; border-color: #1a73e8; }
   .fl-slabel { font-size: 12px; color: #888; margin-left: 4px; }
 </style>
@@ -66,17 +67,18 @@ VISUAL_HTML = """
 
   <div id="fctrl-r" class="fl-ctrl">
     <label>start</label>
-    <input type="number" id="fr-start" value="0" min="-999" max="999" oninput="flInputChange()">
+    <input type="number" id="fr-start" value="0"  min="-20" max="20" oninput="flInputChange()">
     <label>stop</label>
-    <input type="number" id="fr-stop"  value="5" min="-999" max="999" oninput="flInputChange()">
+    <input type="number" id="fr-stop"  value="5"  min="-20" max="20" oninput="flInputChange()">
     <label>step</label>
-    <input type="number" id="fr-step"  value="1" min="-999"  max="999"  oninput="flInputChange()">
+    <input type="number" id="fr-step"  value="1"  min="-9"  max="9"  oninput="flInputChange()">
   </div>
   <div id="fctrl-s" class="fl-ctrl" style="display:none">
     <label>string</label>
     <input type="text" id="fs-val" value="hello" maxlength="14" oninput="flInputChange()">
   </div>
 
+  <div class="fl-warn" id="fl-warn"></div>
   <div class="fl-code" id="fl-code"></div>
 
   <div style="font-size:12px;color:#666;margin-bottom:6px">
@@ -91,7 +93,9 @@ VISUAL_HTML = """
   </div>
 
   <div style="font-size:12px;color:#666;margin-bottom:5px">Output:</div>
-  <div class="fl-out" id="fl-out"><span style="color:#bbb">run the loop to see output…</span></div>
+  <div class="fl-out" id="fl-out">
+    <span style="color:#bbb">run the loop to see output…</span>
+  </div>
 
   <div class="fl-btns">
     <button class="fl-btn primary" id="fl-runbtn" onclick="flTogglePlay()">&#9654; Run</button>
@@ -116,16 +120,41 @@ VISUAL_HTML = """
 
   function getItems() {
     if (_mode === 'range') {
-      var s = parseInt(document.getElementById('fr-start').value) || 0;
-      var e = parseInt(document.getElementById('fr-stop').value)  || 5;
-      var p = parseInt(document.getElementById('fr-step').value)  || 1;
-      if (p < 1) p = 1;
+      var s = parseInt(document.getElementById('fr-start').value);
+      var e = parseInt(document.getElementById('fr-stop').value);
+      var p = parseInt(document.getElementById('fr-step').value);
+      if (isNaN(s) || isNaN(e) || isNaN(p) || p === 0) return null;
       var a = [];
-      for (var v = s; v < e; v += p) { a.push(v); if (a.length > 20) break; }
+      if (p > 0) {
+        for (var v = s; v < e; v += p) { a.push(v); if (a.length > 20) break; }
+      } else {
+        for (var v = s; v > e; v += p) { a.push(v); if (a.length > 20) break; }
+      }
       return a;
     } else {
       return (document.getElementById('fs-val').value || '').split('').slice(0, 20);
     }
+  }
+
+  function validate() {
+    var warn = document.getElementById('fl-warn');
+    if (_mode !== 'range') { warn.style.display = 'none'; return true; }
+    var s = parseInt(document.getElementById('fr-start').value);
+    var e = parseInt(document.getElementById('fr-stop').value);
+    var p = parseInt(document.getElementById('fr-step').value);
+    if (isNaN(p) || p === 0) {
+      warn.textContent = 'step cannot be 0 — that would loop forever.';
+      warn.style.display = 'block'; return false;
+    }
+    if (p > 0 && s >= e) {
+      warn.textContent = 'start (' + s + ') >= stop (' + e + ') with positive step — range is empty.';
+      warn.style.display = 'block'; return false;
+    }
+    if (p < 0 && s <= e) {
+      warn.textContent = 'start (' + s + ') <= stop (' + e + ') with negative step — range is empty.';
+      warn.style.display = 'block'; return false;
+    }
+    warn.style.display = 'none'; return true;
   }
 
   function getSpeed() { return 2000 - parseInt(document.getElementById('fl-speed').value); }
@@ -149,13 +178,13 @@ VISUAL_HTML = """
     var row = document.getElementById('fl-seq');
     var n = _items.length;
     if (!n) {
-      row.innerHTML = '<span style="font-size:13px;color:#999">no items — check inputs</span>';
+      row.innerHTML = '<span style="font-size:13px;color:#999">no items to iterate</span>';
       return;
     }
-    var bw = Math.min(56, Math.max(34, Math.floor((560 - (n-1)*6) / n)));
+    var bw = Math.min(56, Math.max(34, Math.floor((560 - (n - 1) * 6) / n)));
     var html = '';
     for (var i = 0; i < n; i++) {
-      var isAct = (i === _idx && _idx < n);
+      var isAct  = (i === _idx && _idx < n);
       var isDone = (_idx > 0 && i < _idx);
       var bc = 'fl-box' + (isAct ? ' active' : isDone ? ' done' : '');
       var ac = 'fl-arr' + (isAct ? ' show' : '');
@@ -170,7 +199,7 @@ VISUAL_HTML = """
   function renderVar() {
     var ve = document.getElementById('fl-vval');
     var pe = document.getElementById('fl-pill');
-    if (_items.length === 0 || _idx < 0) {
+    if (!_items.length || _idx < 0) {
       ve.textContent = '—'; ve.style.color = '#888';
       pe.className = 'fl-pill idle'; pe.textContent = 'idle';
     } else if (_idx >= _items.length) {
@@ -198,30 +227,34 @@ VISUAL_HTML = """
   }
 
   function render() { renderSeq(); renderVar(); renderOut(); }
-
   function updateBtn() {
-    var b = document.getElementById('fl-runbtn');
-    b.innerHTML = _playing ? '&#9646;&#9646; Pause' : '&#9654; Run';
+    document.getElementById('fl-runbtn').innerHTML =
+      _playing ? '&#9646;&#9646; Pause' : '&#9654; Run';
   }
+  function stopTimer() { if (_timer) { clearTimeout(_timer); _timer = null; } }
 
   window.flInputChange = function() {
     stopTimer(); _playing = false; updateBtn();
-    _items = getItems(); _idx = 0; _out = [];
+    var ok = validate();
+    _items = (ok ? getItems() : null) || [];
+    _idx = 0; _out = [];
     updateCode(); render();
   };
 
   window.flTab = function(m) {
     _mode = m;
-    document.getElementById('ftab-r').className = 'fl-tab' + (m==='range' ? ' on' : '');
-    document.getElementById('ftab-s').className = 'fl-tab' + (m==='string' ? ' on' : '');
-    document.getElementById('fctrl-r').style.display = m==='range' ? '' : 'none';
-    document.getElementById('fctrl-s').style.display = m==='string' ? '' : 'none';
+    document.getElementById('ftab-r').className = 'fl-tab' + (m === 'range' ? ' on' : '');
+    document.getElementById('ftab-s').className = 'fl-tab' + (m === 'string' ? ' on' : '');
+    document.getElementById('fctrl-r').style.display = m === 'range' ? '' : 'none';
+    document.getElementById('fctrl-s').style.display = m === 'string' ? '' : 'none';
     flInputChange();
   };
 
   window.flReset = function() {
     stopTimer(); _playing = false; updateBtn();
-    _items = getItems(); _idx = 0; _out = []; render();
+    var ok = validate();
+    _items = (ok ? getItems() : null) || [];
+    _idx = 0; _out = []; render();
   };
 
   window.flStep = function() {
@@ -248,9 +281,7 @@ VISUAL_HTML = """
     runStep();
   };
 
-  function stopTimer() { if (_timer) { clearTimeout(_timer); _timer = null; } }
-
-  updateCode(); _items = getItems(); render();
+  updateCode(); _items = getItems() || []; render();
 })();
 </script>
 """
@@ -270,9 +301,9 @@ loop_type_selector = widgets.RadioButtons(
     disabled=False
 )
 
-start_input = widgets.IntText(value=0, description='Start:')
-stop_input  = widgets.IntText(value=5, description='Stop:')
-step_input  = widgets.IntText(value=1, description='Step:')
+start_input = widgets.IntText(value=0,  description='Start:')
+stop_input  = widgets.IntText(value=5,  description='Stop:')
+step_input  = widgets.IntText(value=1,  description='Step:')
 range_widgets = widgets.VBox([start_input, stop_input, step_input])
 range_widgets.layout.visibility = 'visible'
 
