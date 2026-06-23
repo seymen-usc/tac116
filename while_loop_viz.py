@@ -153,13 +153,13 @@ def generate_gif():
         if 0.1 < t < 0.85:
             boom_alpha = min(1.0, (t-0.1)/0.2) * max(0, (0.85-t)/0.3)
             bc = (int(255*boom_alpha), int(80*boom_alpha), int(80*boom_alpha))
-            bw = fnt_big.getlength("BOOM!")
-            draw.text((cx - bw//2, cy - 30), "BOOM!", font=fnt_big, fill=bc)
+            bw = fnt_big.getlength("WEEEE!")
+            draw.text((cx - bw//2, cy - 30), "WEEEE!", font=fnt_big, fill=bc)
 
         # output panel: show all accumulated output lines + BOOM
-        all_lines = output_lines + ["** BOOM! **"]
+        all_lines = output_lines + ["** WEEEE! **"]
         for i, line in enumerate(all_lines):
-            col = RED if line == "** BOOM! **" else OUT_TEXT
+            col = RED if line == "** WEEEE! **" else OUT_TEXT
             draw.text((OUT_X, OUT_Y + i * 18), line, font=fnt_out, fill=col)
 
         draw.text((CODE_X, H-32), "● count = 0  —  loop exits!", font=fnt_lbl, fill=RED)
@@ -210,11 +210,11 @@ def generate_gif():
         x = tok(draw, x, y, " -= ", WHITE)
         x = tok(draw, x, y, "1", CYAN)
 
-        # Line 4: print("** BOOM! **")
+        # Line 4: print("** WEEEE! **")
         y = CODE_Y + 4*LINE_H; x = CODE_X
         x = tok(draw, x, y, "print", PURPLE, fnt_kw)
         x = tok(draw, x, y, '(', WHITE)
-        x = tok(draw, x, y, '"** BOOM! **"', RED if done else GRAY)
+        x = tok(draw, x, y, '"** WEEEE! **"', RED if done else GRAY)
         x = tok(draw, x, y, ')', WHITE)
 
         # ── Divider below code ──
