@@ -1,7 +1,7 @@
 from ipywidgets import interact, IntText, Text
 from IPython.display import display, HTML
 
-def visualize_slice(text, start, stop, step):
+def my_function(text, start, stop, step):
     if not text:
         print("Please enter some text.")
         return
