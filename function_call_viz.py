@@ -36,7 +36,7 @@ def code_view(active_line=None, executed=None, title="Program code"):
         color = "#111827" if is_active or is_done else "#6b7280"
         rows.append(
             f"""
-            <div style='display:grid;grid-template-columns:30px 40px 1fr;align-items:stretch;gap:8px;margin:2px 0;'>
+            <div style='display:grid;grid-template-columns:30px 40px 1fr;align-items:stretch;gap:2px;margin:2px 0;'>
               <div style='text-align:right;color:#94a3b8;font-family:monospace;padding-top:2px;'>{i}</div>
               <div style='font-family:monospace;color:#ef4444;font-weight:700;'>{arrow}</div>
               <div style='font-family:monospace;white-space:pre;background:{bg};border:{border};border-radius:8px;padding:4px 8px;color:{color};'>
