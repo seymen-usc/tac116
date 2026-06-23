@@ -66,11 +66,11 @@ VISUAL_HTML = """
 
   <div id="fctrl-r" class="fl-ctrl">
     <label>start</label>
-    <input type="number" id="fr-start" value="0" min="-9" max="20" oninput="flInputChange()">
+    <input type="number" id="fr-start" value="0" min="-999" max="999" oninput="flInputChange()">
     <label>stop</label>
-    <input type="number" id="fr-stop"  value="5" min="-9" max="20" oninput="flInputChange()">
+    <input type="number" id="fr-stop"  value="5" min="-999" max="999" oninput="flInputChange()">
     <label>step</label>
-    <input type="number" id="fr-step"  value="1" min="1"  max="9"  oninput="flInputChange()">
+    <input type="number" id="fr-step"  value="1" min="-999"  max="999"  oninput="flInputChange()">
   </div>
   <div id="fctrl-s" class="fl-ctrl" style="display:none">
     <label>string</label>
