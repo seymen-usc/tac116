@@ -69,4 +69,4 @@ stop_slider = IntText(value=10, description='Stop:') # Large enough initial valu
 step_slider = IntText(value=1, description='Step:')
 
 # Link widgets to the visualization function
-interact(visualize_slice, text=text_widget, start=start_slider, stop=stop_slider, step=step_slider);
+interact(my_function, text=text_widget, start=start_slider, stop=stop_slider, step=step_slider);
