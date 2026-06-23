@@ -134,7 +134,7 @@ class CodeFlowVisualizer:
 
         for active_line, executed, message in frames:
             self.show_frame(active_line, executed, message)
-            time.sleep(3)
+            time.sleep(1.5)
 
         with self.output:
             display(HTML('<p style="margin:8px 0 0 0;color:#065f46;font-weight:700;font-family:monospace;">Done.</p>'))
