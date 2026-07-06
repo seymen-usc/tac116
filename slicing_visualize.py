@@ -69,9 +69,9 @@ def main():
     start_slider = IntText(value=0, description='Start:')
     stop_slider = IntText(value=len(value_i), description='Stop:') # Large enough initial value
     step_slider = IntText(value=1, description='Step:')
+    interact(my_function, text=text_widget, start=start_slider, stop=stop_slider, step=step_slider);
 
 if __name__ == "__main__":
-main()
+    main()
 
 # Link widgets to the visualization function
-interact(my_function, text=text_widget, start=start_slider, stop=stop_slider, step=step_slider);
