@@ -63,11 +63,14 @@ def my_function(text, start, stop, step):
     display(HTML(output_html))
 
 # Create interactive widgets
-value_i='Python Slicing Example'
-text_widget = Text(value=value_i, description='Text:')
-start_slider = IntText(value=0, description='Start:')
-stop_slider = IntText(value=len(value_i), description='Stop:') # Large enough initial value
-step_slider = IntText(value=1, description='Step:')
+def main():
+    value_i='Python Slicing Example'
+    text_widget = Text(value=value_i, description='Text:')
+    start_slider = IntText(value=0, description='Start:')
+    stop_slider = IntText(value=len(value_i), description='Stop:') # Large enough initial value
+    step_slider = IntText(value=1, description='Step:')
+if __name__ == "__main__":
+    main()
 
 # Link widgets to the visualization function
 interact(my_function, text=text_widget, start=start_slider, stop=stop_slider, step=step_slider);
