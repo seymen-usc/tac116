@@ -20,8 +20,8 @@ Example:
 
     visualize(data)
 """
+from __future__ import annotations
 def main():
-    from __future__ import annotations
     
     from dataclasses import dataclass
     from typing import Any, Iterable, Optional
