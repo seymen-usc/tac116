@@ -109,12 +109,27 @@ def main():
                 layout=widgets.Layout(width='320px'),
             )
 
+            self.mode_radio = widgets.RadioButtons(
+                options=['Automatic', 'Manual'],
+                value='Automatic',
+                description='Playback:',
+                layout=widgets.Layout(width='260px'),
+            )
+
             self.run_btn = widgets.Button(description='Run', button_style='success')
             self.reset_btn = widgets.Button(description='Reset')
+            self.back_btn = widgets.Button(description='\u2190 Back', disabled=True)
+            self.next_btn = widgets.Button(description='Next \u2192', disabled=True)
             self.output = widgets.Output()
 
             self.run_btn.on_click(self.run_program)
             self.reset_btn.on_click(self.reset_program)
+            self.back_btn.on_click(self.go_back)
+            self.next_btn.on_click(self.go_next)
+            self.mode_radio.observe(self.on_mode_change, names='value')
+
+            self.nav_box = widgets.HBox([self.back_btn, self.next_btn])
+            self.nav_box.layout.display = 'none'  # hidden until Manual mode is selected
 
             self.container = widgets.VBox([
                 widgets.HTML('<h3 style="margin:0 0 6px 0;">Weather Checker \u2014 Code Flow</h3>'),
@@ -122,19 +137,31 @@ def main():
                     '<p style="margin:0 0 8px 0;color:#334155;">'
                     'Watch Python execute this program one line at a time. '
                     'The arrow shows exactly where Python is right now, and the '
-                    'output panel fills in live as <code>print()</code> statements run.'
+                    'output panel fills in live as <code>print()</code> statements run. '
+                    'Choose Automatic to watch it play out, or Manual to step through '
+                    'it yourself with Back / Next.'
                     '</p>'
                 ),
                 self.temp,
+                self.mode_radio,
                 widgets.HBox([self.run_btn, self.reset_btn]),
+                self.nav_box,
                 self.output,
             ])
 
             self.printed = []
+            self.frames = []
+            self.frame_index = -1
             self.render_start()
+
+        def on_mode_change(self, change):
+            self.nav_box.layout.display = '' if change['new'] == 'Manual' else 'none'
 
         def render_start(self):
             self.printed = []
+            self.frames = []
+            self.frame_index = -1
+            self.update_nav_buttons()
             with self.output:
                 clear_output()
                 display(HTML(render_code(active_line=1, executed=set(), title='Not started yet')))
@@ -144,16 +171,38 @@ def main():
                 )))
                 display(HTML(render_output_console([])))
 
-        def show_frame(self, active_line, executed, message, jump_type='normal',
-                        out=None, step_num=None, total_steps=None):
-            if out is not None:
-                self.printed.append(out)
+        def update_nav_buttons(self):
+            self.back_btn.disabled = (self.frame_index <= 0)
+            self.next_btn.disabled = (
+                self.frame_index < 0 or self.frame_index >= len(self.frames) - 1
+            )
+
+        def display_index(self, idx):
+            idx = max(0, min(idx, len(self.frames) - 1))
+            self.frame_index = idx
+            f = self.frames[idx]
+            printed_so_far = [ff['out'] for ff in self.frames[:idx + 1] if ff['out']]
             with self.output:
                 clear_output(wait=True)
-                display(HTML(render_code(active_line=active_line, executed=executed,
-                                          title='Running\u2026', jump_type=jump_type)))
-                display(HTML(render_explanation(message, jump_type, step_num, total_steps)))
-                display(HTML(render_output_console(self.printed)))
+                display(HTML(render_code(active_line=f['active'], executed=f['executed'],
+                                          title='Running\u2026', jump_type=f['jump'])))
+                display(HTML(render_explanation(f['msg'], f['jump'], idx + 1, len(self.frames))))
+                display(HTML(render_output_console(printed_so_far)))
+                if idx == len(self.frames) - 1:
+                    display(HTML(
+                        "<p style='margin:8px 0 0 0;color:#065f46;font-weight:700;"
+                        "font-family:monospace;'>Done \u2014 try a different temperature and run it again!</p>"
+                    ))
+
+        def go_back(self, _):
+            if self.frames:
+                self.display_index(self.frame_index - 1)
+                self.update_nav_buttons()
+
+        def go_next(self, _):
+            if self.frames:
+                self.display_index(self.frame_index + 1)
+                self.update_nav_buttons()
 
         def reset_program(self, _):
             self.render_start()
@@ -217,18 +266,18 @@ def main():
                      "is finished!",
                 jump='return')
 
-            total = len(frames)
-            for i, f in enumerate(frames, start=1):
-                self.show_frame(f['active'], f['executed'], f['msg'],
-                                 jump_type=f['jump'], out=f['out'],
-                                 step_num=i, total_steps=total)
-                time.sleep(2.5)
+            self.frames = frames
+            self.frame_index = 0
 
-            with self.output:
-                display(HTML(
-                    "<p style='margin:8px 0 0 0;color:#065f46;font-weight:700;"
-                    "font-family:monospace;'>Done \u2014 try a different temperature and run it again!</p>"
-                ))
+            if self.mode_radio.value == 'Automatic':
+                self.back_btn.disabled = True
+                self.next_btn.disabled = True
+                for i in range(len(frames)):
+                    self.display_index(i)
+                    time.sleep(1.5)
+            else:
+                self.display_index(0)
+                self.update_nav_buttons()
 
     viz = CodeFlowVisualizer()
     display(viz.container)
