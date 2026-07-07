@@ -339,5 +339,5 @@ def main():
   run_button = widgets.Button(description="Run Loop")
   run_button.on_click(run_loop)
   
-  display(loop_type_selector, range_widgets, string_widgets, run_button, output_widget)
-  update_widgets({'new': loop_type_selector.value})
+  #display(loop_type_selector, range_widgets, string_widgets, run_button, output_widget)
+  #update_widgets({'new': loop_type_selector.value})
