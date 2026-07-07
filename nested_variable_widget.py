@@ -1,25 +1,25 @@
-    """
-    nested_variable_widget.py
-    
-    Reusable nested data visualizer for Python variables.
-    
-    Features:
-    - Displays dictionaries and lists/tuples/sets as an expandable tree.
-    - Shows labels for dict keys and indexes for list/tuple items.
-    - Handles nested combinations like dict inside list, list inside dict, etc.
-    - Can be imported into another .py file and called with one function.
-    
-    Example:
-        from nested_variable_widget import visualize
-    
-        data = {
-            "name": "Alex",
-            "scores": [10, 20, {"bonus": 5}],
-            "profile": {"age": 19, "tags": ["student", "coder"]},
-        }
-    
-        visualize(data)
-    """
+"""
+nested_variable_widget.py
+
+Reusable nested data visualizer for Python variables.
+
+Features:
+- Displays dictionaries and lists/tuples/sets as an expandable tree.
+- Shows labels for dict keys and indexes for list/tuple items.
+- Handles nested combinations like dict inside list, list inside dict, etc.
+- Can be imported into another .py file and called with one function.
+
+Example:
+    from nested_variable_widget import visualize
+
+    data = {
+        "name": "Alex",
+        "scores": [10, 20, {"bonus": 5}],
+        "profile": {"age": 19, "tags": ["student", "coder"]},
+    }
+
+    visualize(data)
+"""
 def main():
     from __future__ import annotations
     
