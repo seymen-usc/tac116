@@ -134,7 +134,7 @@ def main():
             self.container = widgets.VBox([
                 widgets.HTML('<h3 style="margin:0 0 6px 0;">Weather Checker \u2014 Code Flow</h3>'),
                 widgets.HTML(
-                    '<p style="margin:0 0 8px 0;color:#334155;">'
+                    '<p style="margin:0 0 8px 0;color:#FFFFFF;">'
                     'Watch Python execute this program one line at a time. '
                     'The arrow shows exactly where Python is right now, and the '
                     'output panel fills in live as <code>print()</code> statements run. '
