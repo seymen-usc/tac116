@@ -286,4 +286,4 @@ def main():
   })();
   </script>
   """
-  #display(HTML(VISUAL_HTML))
+  display(HTML(VISUAL_HTML))
