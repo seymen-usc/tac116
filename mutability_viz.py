@@ -429,11 +429,9 @@ def main():
             self.container = widgets.VBox([
                 widgets.HTML('<h3 style="margin:0 0 6px 0;">Mutability vs. Immutability \u2014 Code Flow</h3>'),
                 widgets.HTML(
-                    '<p style="margin:0 0 8px 0;color:#334155;">'
+                    '<p style="margin:0 0 8px 0;color:#FFFFFF;">'
                     'Watch what happens to a variable BEFORE and AFTER it is passed into '
-                    'a function. The Memory View below the code shows whether two variables '
-                    'share the same object (a real mutation is visible everywhere) or point '
-                    'to different objects (a reassignment stays local).'
+                    'a function.'
                     '</p>'
                 ),
                 self.example_radio,
