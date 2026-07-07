@@ -222,7 +222,7 @@ def main():
                 self.show_frame(f['active'], f['executed'], f['msg'],
                                  jump_type=f['jump'], out=f['out'],
                                  step_num=i, total_steps=total)
-                time.sleep(1.5)
+                time.sleep(2.5)
 
             with self.output:
                 display(HTML(
